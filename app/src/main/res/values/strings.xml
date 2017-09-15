@@ -9,7 +9,7 @@
     <string name="btn_start">开始</string>
     <string name="btn_pause">暂停</string>
     <string name="btn_resume">继续</string>
-    <string name="btn_stop">作废</string>
+    <string name="btn_stop">放弃</string>
     <string name="btn_skip">略过</string>
 
     <string name="scene_title_work">开始工作</string>
