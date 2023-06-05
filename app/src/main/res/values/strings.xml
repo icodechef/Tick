@@ -83,17 +83,18 @@
 
     <string name="info_version">%1$s v%2$s</string>
     <string name="info_description">
-        "轻番茄, 简单易用的番茄时钟, 是一款基于「番茄工作法」的辅助应用。"
-        "如果遵循番茄工作法，使用纸笔来制作今日待办、活动清单和记录，"
-        "需要的仅仅是手机上的一款计时器App，相信轻番茄是您最好的选择。"
-        "开启一个番茄钟，给自己 25 分钟的专注时间，战胜拖延，进入心流，让学习和工作更有效率!"
+        基于开源项目进一步开发
+        添加了数据可视化，大幅修改了前端界面
+        优化了一些问题
     </string>
     <string name="info_about_title">关于</string>
-    <string name="info_contact_us">联系方式</string>
-    <string name="info_email_title">邮箱</string>
-    <string name="info_email">dengman2010@163.com</string>
-    <string name="info_github_title">Github</string>
-    <string name="info_github">https://github.com/icodechef/Tick</string>
+    <string name="info_contact_us">相关作者</string>
+    <string name="info_email_title">原始项目</string>
+    <string name="info_email">https://github.com/icodechef/Tick</string>
+    <string name="info_github_title">合作者</string>
+    <string name="info_github">PublicCo
+wukef2425
+    </string>
     <string name="info_website_title">网站</string>
     <string name="info_site">http://tick.icodechef.com/</string>
 
@@ -101,4 +102,9 @@
     <string name="toast_tick_sound_off">滴答声已关闭</string>
     <string name="navigation_drawer_open">打开导航栏</string>
     <string name="navigation_drawer_close">关闭导航栏</string>
+
+    <!--myDebug-->
+    <string name="Loginfo">MyDebugInfo</string>
+    <string name="pie_chart">test_piechart</string>
+    <string name="home_data_menu">test_datadraw</string>
 </resources>

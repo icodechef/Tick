@@ -8,6 +8,13 @@
     android:background="@color/colorBackground"
     tools:context="com.icodechef.android.tick.activity.ScheduleActivity">
 
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/pie_chart"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+
+        android:layout_marginTop="100dp" />
+
     <include layout="@layout/toolbar"/>
 
     <LinearLayout
@@ -214,6 +221,13 @@
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/pie_chart2"
+            android:layout_width="197dp"
+            android:layout_height="169dp"
+
+            android:layout_marginTop="100dp" />
 
     </LinearLayout>
 

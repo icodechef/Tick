@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
                 invalidateOptionsMenu();
+                Log.i("@string/Loginfo","onDrawerClosed");
             }
 
             @Override
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDrawerStateChanged(int newState) {
                 super.onDrawerStateChanged(newState);
-
+                //当用户打开了菜单栏且选择了某些选项让mMenuItemIDLE队列存在任务时
                 if (mMenuItemIDLE != null && newState == DrawerLayout.STATE_IDLE) {
                     runNavigationItemSelected(mMenuItemIDLE);
                     mMenuItemIDLE = null;
