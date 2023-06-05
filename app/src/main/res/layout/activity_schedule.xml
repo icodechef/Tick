@@ -8,13 +8,6 @@
     android:background="@color/colorBackground"
     tools:context="com.icodechef.android.tick.activity.ScheduleActivity">
 
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/pie_chart"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-
-        android:layout_marginTop="100dp" />
-
     <include layout="@layout/toolbar"/>
 
     <LinearLayout
@@ -25,92 +18,96 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="173dp"
             android:layout_margin="@dimen/card_view_margin"
             app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
-                android:baselineAligned="false"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_view_spacing"
+                android:baselineAligned="false"
                 android:divider="@drawable/divider"
-                android:showDividers="middle"
-                android:layout_margin="@dimen/card_view_spacing">
+                android:orientation="vertical"
+                android:showDividers="middle">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorPrimary"
                     android:layout_marginBottom="@dimen/header_spacing"
-                    android:text="@string/schedule_today_title"/>
+                    android:text="@string/schedule_today_title"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
                 <LinearLayout
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
                     android:paddingTop="@dimen/card_view_spacing"
                     android:paddingBottom="@dimen/card_view_spacing">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_horizontal|bottom">
+                            android:gravity="center_horizontal|bottom"
+                            android:orientation="horizontal">
+
                             <TextView
                                 android:id="@+id/schedule_today_durations"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="24sp"
-                                tools:text="0"
-                                android:textStyle="bold"
+                                android:gravity="center"
                                 android:textColor="@color/colorTextDark"
-                                android:gravity="center"/>
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                tools:text="0" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:textColor="@color/colorTextLight"
+                                android:gravity="center"
                                 android:text="@string/time_unit"
-                                android:gravity="center"/>
+                                android:textColor="@color/colorTextLight"
+                                android:textSize="12sp" />
                         </LinearLayout>
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:text="@string/schedule_durations"
-                            android:textColor="@color/colorTextLight"
-                            android:gravity="center"/>
+                            android:textColor="@color/colorTextLight" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/schedule_today_times"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
-                            tools:text="0"
-                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorTextDark"
-                            android:gravity="center"/>
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            tools:text="0" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:text="@string/schedule_times"
-                            android:textColor="@color/colorTextLight"
-                            android:gravity="center"/>
+                            android:textColor="@color/colorTextLight" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -125,109 +122,107 @@
             app:cardElevation="@dimen/card_elevation">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/card_view_spacing"
                 android:divider="@drawable/divider"
-                android:showDividers="middle"
-                android:layout_margin="@dimen/card_view_spacing">
+                android:orientation="vertical"
+                android:showDividers="middle">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorPrimary"
                     android:layout_marginBottom="@dimen/header_spacing"
-                    android:text="@string/schedule_amount_title"/>
+                    android:text="@string/cal_amount"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
                 <LinearLayout
-                    android:baselineAligned="false"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
                     android:paddingTop="@dimen/card_view_spacing"
                     android:paddingBottom="@dimen/card_view_spacing">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_horizontal|bottom">
+                            android:gravity="center_horizontal|bottom"
+                            android:orientation="horizontal">
+
                             <TextView
                                 android:id="@+id/schedule_amount_durations"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="24sp"
-                                tools:text="0"
-                                android:textStyle="bold"
+                                android:gravity="center"
                                 android:textColor="@color/colorTextDark"
-                                android:gravity="center"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:textColor="@color/colorTextLight"
-                                android:text="@string/time_unit"
-                                android:gravity="center"/>
+                                android:textSize="24sp"
+                                android:textStyle="bold"
+                                tools:text="0" />
                         </LinearLayout>
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/schedule_durations"
-                            android:textColor="@color/colorTextLight"
-                            android:gravity="center"/>
+                            android:gravity="center"
+                            android:text="@string/cla_focus_amount"
+                            android:textColor="@color/colorTextLight" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/schedule_amount_times"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
-                            tools:text="0"
-                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorTextDark"
-                            android:gravity="center"/>
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            tools:text="0" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:gravity="center"
                             android:text="@string/schedule_times"
-                            android:textColor="@color/colorTextLight"
-                            android:gravity="center"/>
+                            android:textColor="@color/colorTextLight" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
                     android:layout_marginTop="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="@dimen/activity_horizontal_margin"
-                    android:textColor="@color/colorTextLight"
-                    android:layout_gravity="bottom"
                     android:drawableStart="@drawable/ic_error_outline_black_18dp"
                     android:drawableLeft="@drawable/ic_error_outline_black_18dp"
-                    android:text="@string/schedule_amount_summary"/>
+                    android:text="@string/schedule_amount_summary"
+                    android:textColor="@color/colorTextLight" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
         <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/pie_chart2"
-            android:layout_width="197dp"
-            android:layout_height="169dp"
+            android:id="@+id/pie_chart"
+            android:layout_width="114dp"
+            android:layout_height="104dp"
 
             android:layout_marginTop="100dp" />
+
+
 
     </LinearLayout>
 

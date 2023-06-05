@@ -153,4 +153,40 @@ public class TickDBAdapter {
     private static String formatDate(Date date) {
         return formatDate.format(date);
     }
+
+    public HashMap pie_result(){
+        HashMap<String, Integer> results = new HashMap<>();
+        String[] projection = {
+                _ID,
+                COLUMN_NAME_END_TIME,
+                COLUMN_NAME_DURATION
+        };
+        Cursor cursor = db.query(
+                TABLE_NAME,                     // The table to query
+                projection,                       // The columns to return
+                null,                        // The columns for the WHERE clause
+                null,                    // The values for the WHERE clause
+                null,                            // don't group the rows
+                null,                            // don't filter by row groups
+                null                             // don't sort order
+        );
+
+        int finishtime=0;
+        int not_finishtime=0;
+        try {
+            while (cursor.moveToNext()) {
+                if (!cursor.isNull(cursor.getColumnIndex(COLUMN_NAME_END_TIME))) {
+                    finishtime++;
+                }
+                else{
+                    not_finishtime++;
+                }
+            }
+        } finally {
+            cursor.close();
+        }
+        results.put("finishtime",finishtime);
+        results.put("not_finishtime",not_finishtime) ;
+        return results;
+    }
 }

@@ -107,4 +107,6 @@ wukef2425
     <string name="Loginfo">MyDebugInfo</string>
     <string name="pie_chart">test_piechart</string>
     <string name="home_data_menu">test_datadraw</string>
+    <string name="cal_amount">累计次数</string>
+    <string name="cla_focus_amount">累计专注次数</string>
 </resources>
