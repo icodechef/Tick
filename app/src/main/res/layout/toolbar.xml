@@ -9,11 +9,19 @@
     app:elevation="0dp"
     tools:showIn="@layout/app_bar_main">
 
+    <ImageButton
+        android:id="@+id/voice_recognition_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:src="@drawable/voice_icon"
+        android:background="?attr/selectableItemBackgroundBorderless"/>
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:background="@drawable/toolbar"
         android:minHeight="?attr/actionBarSize"
         android:fitsSystemWindows="true"
         app:popupTheme="@style/AppTheme.PopupOverlay"
