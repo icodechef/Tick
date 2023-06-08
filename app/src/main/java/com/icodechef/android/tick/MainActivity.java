@@ -322,6 +322,12 @@ public class MainActivity extends AppCompatActivity
         if (getSharedPreferences().getBoolean("pref_key_screen_on", false)) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+
+        TextView current = findViewById(R.id.current_pomodoro);
+        current.setText(String.valueOf(mApplication.getCurrentPomodoro()));
+
+        TextView total = findViewById(R.id.total_pomodoro);
+        total.setText(String.valueOf(mApplication.getTotalPomodoros()));
     }
 
     private void updateText(long millisUntilFinished) {
@@ -404,18 +410,18 @@ public class MainActivity extends AppCompatActivity
                 .getInt("pref_key_long_break", TickApplication.DEFAULT_LONG_BREAK);
 
         ((TextView)findViewById(R.id.stage_work_value))
-                .setText(getResources().getString(R.string.stage_time_unit, workLength));
+                .setText(String.valueOf(workLength));
         ((TextView)findViewById(R.id.stage_short_break_value))
-                .setText(getResources().getString(R.string.stage_time_unit, shortBreak));
+                .setText(String.valueOf(shortBreak));
         ((TextView)findViewById(R.id.stage_long_break_value))
-                .setText(getResources().getString(R.string.stage_time_unit, longBreak));
+                .setText(String.valueOf(longBreak));
 
-        findViewById(R.id.stage_work).setAlpha(
-                scene == TickApplication.SCENE_WORK ? 0.9f : 0.5f);
-        findViewById(R.id.stage_short_break).setAlpha(
-                scene == TickApplication.SCENE_SHORT_BREAK ? 0.9f : 0.5f);
-        findViewById(R.id.stage_long_break).setAlpha(
-                scene == TickApplication.SCENE_LONG_BREAK ? 0.9f : 0.5f);
+        findViewById(R.id.stage_work).setVisibility(
+                scene == TickApplication.SCENE_WORK ? View.VISIBLE : View.GONE);
+        findViewById(R.id.stage_short_break).setVisibility(
+                scene == TickApplication.SCENE_SHORT_BREAK ? View.VISIBLE : View.GONE);
+        findViewById(R.id.stage_long_break).setVisibility(
+                scene == TickApplication.SCENE_LONG_BREAK ? View.VISIBLE : View.GONE);
     }
 
     private void updateRipple() {

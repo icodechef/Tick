@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorStrokeCircle"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorBackground"
     tools:context="com.icodechef.android.tick.MainActivity">
 
     <include layout="@layout/toolbar"/>

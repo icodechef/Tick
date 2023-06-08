@@ -61,7 +61,7 @@ public class TickProgressBar extends View {
     private Paint getPaint() {
         Paint paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setStrokeWidth(6.0f);
+        paint.setStrokeWidth(2.0f);
         paint.setStyle(Paint.Style.STROKE);
         return paint;
     }
