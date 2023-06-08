@@ -6,25 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:theme="@style/AppTheme.AppBarOverlay"
+    android:background="@color/colorBackground"
     app:elevation="0dp"
     tools:showIn="@layout/app_bar_main">
-
-    <ImageButton
-        android:id="@+id/voice_recognition_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:src="@drawable/voice_icon"
-        android:background="?attr/selectableItemBackgroundBorderless"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/toolbar"
+        android:layout_height="match_parent"
         android:minHeight="?attr/actionBarSize"
-        android:fitsSystemWindows="true"
+        android:fitsSystemWindows="false"
         app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:elevation="0dp"/>
+        app:elevation="0dp">
+
+        <ImageButton
+            android:id="@+id/voice_recognition_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@drawable/voice_icon"
+            android:background="?attr/selectableItemBackgroundBorderless"/>
+    </android.support.v7.widget.Toolbar>
 
 </android.support.design.widget.AppBarLayout>

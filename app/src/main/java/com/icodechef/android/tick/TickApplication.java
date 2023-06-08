@@ -103,6 +103,18 @@ public class TickApplication extends Application {
         mTimes++; // 注意这里不能在 activity 中使用, 如果睡眠中就不能保证会运行
     }
 
+    public int getCurrentPomodoro() {
+        int frequency = getSharedPreferences()
+                .getInt("pref_key_long_break_frequency", DEFAULT_LONG_BREAK_FREQUENCY);
+        return (mTimes / 2) % frequency; // 返回现在进行到多少个番茄了, 休息和工作都会增加mTimes, 所以要除以2
+    }
+
+    public int getTotalPomodoros() {
+        int frequency = getSharedPreferences()
+                .getInt("pref_key_long_break_frequency", DEFAULT_LONG_BREAK_FREQUENCY);
+        return frequency; // 返回番茄频率
+    }
+
     public int getScene() {
         int frequency = getSharedPreferences()
                 .getInt("pref_key_long_break_frequency", DEFAULT_LONG_BREAK_FREQUENCY);
