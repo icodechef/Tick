@@ -224,8 +224,19 @@
                 android:id="@+id/pie_chart"
                 android:layout_width="114dp"
                 android:layout_height="104dp"
+
                 />
 
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/Line_chart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
         </LinearLayout>
 
 

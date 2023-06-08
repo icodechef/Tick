@@ -189,4 +189,8 @@ public class TickDBAdapter {
         results.put("not_finishtime",not_finishtime) ;
         return results;
     }
+
+//    public HashMap Line_result(){
+//
+//    }
 }

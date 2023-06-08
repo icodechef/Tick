@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,6 +30,8 @@ import com.icodechef.android.tick.activity.SettingActivity;
 import com.icodechef.android.tick.util.TimeFormatUtil;
 import com.icodechef.android.tick.widget.RippleWrapper;
 import com.icodechef.android.tick.widget.TickProgressBar;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechUtility;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity
     private Button mBtnResume;
     private Button mBtnStop;
     private Button mBtnSkip;
+
+    private ImageButton mBtnVoiceRecog;
     private TextView mTextCountDown;
     private TextView mTextTimeTile;
     private TickProgressBar mProgressBar;
@@ -55,6 +60,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //启动语音识别
+        SpeechUtility.createUtility(getApplicationContext(), SpeechConstant.APPID +"=09788863");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -103,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         mTextTimeTile = (TextView)findViewById(R.id.text_time_title);
         mProgressBar = (TickProgressBar)findViewById(R.id.tick_progress_bar);
         mRippleWrapper = (RippleWrapper)findViewById(R.id.ripple_wrapper);
-
+        mBtnVoiceRecog = (ImageButton)findViewById(R.id.voice_recognition_button);
         initActions();
     }
 
@@ -160,7 +168,17 @@ public class MainActivity extends AppCompatActivity
                 reload();
             }
         });
+        mBtnVoiceRecog.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Intent i = TickService.newIntent(getApplicationContext());
+                i.setAction(TickService.ACTION_VOICEREC);
+                startService(i);
 
+                reload();
+            }
+
+        });
         mBtnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,9 +1,14 @@
 package com.icodechef.android.tick;
 
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
+
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +35,10 @@ public class TickApplication extends Application {
 
     private int mTimes;
     private int mState;
+
+    private SpeechRecognizer speechRecognizer;
+
+    private static final int SPEECH_REQUEST_CODE = 0;
 
     @Override
     public void onCreate() {
@@ -160,4 +169,17 @@ public class TickApplication extends Application {
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     }
+
+//    public void startrecognition(){
+//        // 创建语音识别意图
+//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "zh");
+//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "请说出您的命令");
+//
+//        //开始识别
+//        startActivityForResult(intent, SPEECH_REQUEST_CODE);
+//        speechRecognizer.startListening(intent);
+//        String[] Order={"开始计时","暂停计时","恢复计时","停止计时"};
+//    }
 }

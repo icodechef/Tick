@@ -1,29 +1,46 @@
 package com.icodechef.android.tick;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
+import android.support.annotation.NonNull;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
+import android.view.WindowManager;
 
 import com.icodechef.android.tick.database.TickDBAdapter;
 import com.icodechef.android.tick.util.CountDownTimer;
 import com.icodechef.android.tick.util.Sound;
 import com.icodechef.android.tick.util.TimeFormatUtil;
 import com.icodechef.android.tick.util.WakeLockHelper;
+import com.iflytek.cloud.SpeechConstant;
 
+
+import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class TickService extends Service implements CountDownTimer.OnCountDownTickListener {
@@ -35,6 +52,8 @@ public class TickService extends Service implements CountDownTimer.OnCountDownTi
     public static final String ACTION_STOP = "com.icodechef.android.tick.ACTION_STOP";
     public static final String ACTION_TICK = "com.icodechef.android.tick.ACTION_TICK";
     public static final String ACTION_FINISH = "com.icodechef.android.tick.ACTION_FINISH";
+
+    public static final String ACTION_VOICEREC = "com.icodechef.android.tick.ACTION_VOICEREC";
     public static final String ACTION_AUTO_START
             = "com.icodechef.android.tick.ACTION_AUTO_START";
     public static final String ACTION_TICK_SOUND_ON =
@@ -83,6 +102,10 @@ public class TickService extends Service implements CountDownTimer.OnCountDownTi
         mSound = new Sound(getApplicationContext());
         mID = 0;
 
+        //弹窗
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.intent.action.SCREEN_ON");
         intentFilter.addAction("android.intent.action.SCREEN_OFF");
@@ -94,87 +117,136 @@ public class TickService extends Service implements CountDownTimer.OnCountDownTi
         return null;
     }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            String action = intent.getAction();
+    private void ClockAction(@NonNull String action,Intent intent) {
+        switch (action) {
+            case ACTION_AUTO_START:
+            case ACTION_START:
+                stopTimer();
 
-            switch (action) {
-                case ACTION_AUTO_START:
-                case ACTION_START:
-                    stopTimer();
+                // 自动专注
+                if (action.equals(ACTION_AUTO_START)) {
+                    Intent broadcastIntent = new Intent(ACTION_COUNTDOWN_TIMER);
+                    broadcastIntent.putExtra(REQUEST_ACTION, ACTION_AUTO_START);
+                    sendBroadcast(broadcastIntent);
 
-                    // 自动专注
-                    if (action.equals(ACTION_AUTO_START)) {
-                        Intent broadcastIntent = new Intent(ACTION_COUNTDOWN_TIMER);
-                        broadcastIntent.putExtra(REQUEST_ACTION, ACTION_AUTO_START);
-                        sendBroadcast(broadcastIntent);
+                    mApplication.start();
+                }
 
-                        mApplication.start();
-                    }
+                long millsInTotal = getMillsInTotal();
+                mTimer = new CountDownTimer(millsInTotal);
+                mTimer.setOnChronometerTickListener(this);
+                mTimer.start();
 
-                    long millsInTotal = getMillsInTotal();
-                    mTimer = new CountDownTimer(millsInTotal);
-                    mTimer.setOnChronometerTickListener(this);
-                    mTimer.start();
+                mSound.play();
 
+                startForeground(NOTIFICATION_ID, getNotification(
+                        getNotificationTitle(), formatTime(millsInTotal)).build());
+
+                if (mApplication.getScene() == TickApplication.SCENE_WORK) {
+                    // 插入数据
+                    mDBAdapter.open();
+                    mID = mDBAdapter.insert(mTimer.getStartTime(),
+                            mTimer.getMinutesInFuture());
+                    mDBAdapter.close();
+                }
+                break;
+            case ACTION_PAUSE:
+                if (mTimer != null) {
+                    mTimer.pause();
+
+                    String text = getResources().getString(R.string.notification_time_left)
+                            + " " + intent.getStringExtra("time_left");
+
+                    getNotificationManager().notify(NOTIFICATION_ID, getNotification(
+                            getNotificationTitle(), text).build());
+                }
+
+                mSound.pause();
+                break;
+            case ACTION_RESUME:
+                if (mTimer != null) {
+                    mTimer.resume();
+                }
+
+                mSound.resume();
+                break;
+            case ACTION_STOP:
+                stopTimer();
+                mSound.stop();
+                break;
+            case ACTION_TICK_SOUND_ON:
+                if (mTimer != null && mTimer.isRunning()) {
                     mSound.play();
-
-                    startForeground(NOTIFICATION_ID, getNotification(
-                            getNotificationTitle(), formatTime(millsInTotal)).build());
-
-                    if (mApplication.getScene() == TickApplication.SCENE_WORK) {
-                        // 插入数据
-                        mDBAdapter.open();
-                        mID = mDBAdapter.insert(mTimer.getStartTime(),
-                                mTimer.getMinutesInFuture());
-                        mDBAdapter.close();
-                    }
-                    break;
-                case ACTION_PAUSE:
-                    if (mTimer != null) {
-                        mTimer.pause();
-
-                        String text = getResources().getString(R.string.notification_time_left)
-                                + " " + intent.getStringExtra("time_left");
-
-                        getNotificationManager().notify(NOTIFICATION_ID, getNotification(
-                                getNotificationTitle(), text).build());
-                    }
-
-                    mSound.pause();
-                    break;
-                case ACTION_RESUME:
+                }
+                break;
+            case ACTION_TICK_SOUND_OFF:
+                mSound.stop();
+                break;
+            case ACTION_POMODORO_MODE_ON:
+                // 如果处于暂停状态，但番茄模式设置为 on ,停止番茄时钟
+                if (mApplication.getState() == TickApplication.STATE_PAUSE) {
                     if (mTimer != null) {
                         mTimer.resume();
+                        mSound.resume();
+                        mApplication.resume();
                     }
+                }
 
-                    mSound.resume();
-                    break;
-                case ACTION_STOP:
-                    stopTimer();
-                    mSound.stop();
-                    break;
-                case ACTION_TICK_SOUND_ON:
-                    if (mTimer != null && mTimer.isRunning()) {
-                        mSound.play();
-                    }
-                    break;
-                case ACTION_TICK_SOUND_OFF:
-                    mSound.stop();
-                    break;
-                case ACTION_POMODORO_MODE_ON:
-                    // 如果处于暂停状态，但番茄模式设置为 on ,停止番茄时钟
-                    if (mApplication.getState() == TickApplication.STATE_PAUSE) {
-                        if (mTimer != null) {
-                            mTimer.resume();
-                            mSound.resume();
-                            mApplication.resume();
-                        }
-                    }
+                break;
 
-                    break;
+
+        }
+    }
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        // 提示弹窗
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("提示");
+        builder.setMessage("这是一条消息提示！");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 在确定按钮点击事件中处理相关逻辑
+                // ...
             }
+        });
+        if (intent != null) {
+            String action = intent.getAction();
+            if (Objects.equals(action, ACTION_VOICEREC))
+            {
+                // 使用科大讯飞第三方SDK
+                //使用SpeechRecognizer对象，可根据回调消息自定义界面；
+                mIat = SpeechRecognizer.createRecognizer(this, mInitListener);
+
+//设置语法ID和 SUBJECT 为空，以免因之前有语法调用而设置了此参数；或直接清空所有参数，具体可参考 DEMO 的示例。
+                mIat.setParameter( SpeechConstant.CLOUD_GRAMMAR, null );
+                mIat.setParameter( SpeechConstant.SUBJECT, null );
+//设置返回结果格式，目前支持json,xml以及plain 三种格式，其中plain为纯听写文本内容
+                mIat.setParameter(SpeechConstant.RESULT_TYPE, "json");
+//此处engineType为“cloud”
+                mIat.setParameter( SpeechConstant.ENGINE_TYPE, engineType );
+//设置语音输入语言，zh_cn为简体中文
+                mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
+//设置结果返回语言
+                mIat.setParameter(SpeechConstant.ACCENT, "mandarin");
+// 设置语音前端点:静音超时时间，单位ms，即用户多长时间不说话则当做超时处理
+//取值范围{1000～10000}
+                mIat.setParameter(SpeechConstant.VAD_BOS, "4000");
+//设置语音后端点:后端点静音检测时间，单位ms，即用户停止说话多长时间内即认为不再输入，
+//自动停止录音，范围{0~10000}
+                mIat.setParameter(SpeechConstant.VAD_EOS, "1000");
+//设置标点符号,设置为"0"返回结果无标点,设置为"1"返回结果有标点
+                mIat.setParameter(SpeechConstant.ASR_PTT,"1");
+
+//开始识别，并设置监听器
+                mIat.startListening(mRecogListener);
+            }
+            else {
+                ClockAction(action,intent);
+            }
+
         }
 
         return START_STICKY;

@@ -70,7 +70,8 @@ public class ScheduleActivity extends AppCompatActivity {
         pie_chart.getDescription().setEnabled(false);
 
         if((int) pie_data.get("finishtime")==0 && (int)pie_data.get("not_finishtime")==0){
-            pie_chart.setVisibility(View.GONE);
+            pie_chart.setNoDataText("还没有记录呢，快去试试番茄钟吧！");
+            pie_chart.setNoDataTextColor(Color.BLACK);
         }
         else{
             //设置饼状图数据

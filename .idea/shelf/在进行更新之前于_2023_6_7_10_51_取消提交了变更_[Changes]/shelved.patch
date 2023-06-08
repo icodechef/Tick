@@ -1,0 +1,98 @@
+Index: app/src/main/AndroidManifest.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n          package=\"com.icodechef.android.tick\">\r\n\r\n    <!-- Application holds CPU wakelock while working in background -->\r\n    <uses-permission android:name=\"android.permission.WAKE_LOCK\"/>\r\n    <uses-permission android:name=\"android.permission.VIBRATE\"/>\r\n    <!-- 用于检查更新 -->\r\n    <uses-permission android:name=\"android.permission.INTERNET\"/>\r\n    <uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>\r\n\r\n    <application\r\n        android:name=\".TickApplication\"\r\n        android:allowBackup=\"true\"\r\n        android:icon=\"@mipmap/ic_logo\"\r\n        android:label=\"@string/app_name\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/AppTheme.NoActionBar\">\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:label=\"@string/app_name\"\r\n            android:launchMode=\"singleTask\"\r\n            android:screenOrientation=\"portrait\">\r\n            <intent-filter>\r\n                <action android:name=\"android.intent.action.MAIN\"/>\r\n\r\n                <category android:name=\"android.intent.category.LAUNCHER\"/>\r\n            </intent-filter>\r\n        </activity>\r\n        <activity\r\n            android:name=\".activity.SettingActivity\"\r\n            android:label=\"@string/nav_setting\"\r\n            android:screenOrientation=\"portrait\">\r\n        </activity>\r\n\r\n        <service\r\n            android:name=\".TickService\"\r\n            android:enabled=\"true\"\r\n            android:exported=\"false\">\r\n        </service>\r\n\r\n        <activity\r\n            android:name=\".activity.ScheduleActivity\"\r\n            android:label=\"@string/nav_schedule\"\r\n            android:screenOrientation=\"portrait\">\r\n        </activity>\r\n        <activity\r\n            android:name=\".activity.InfoActivity\"\r\n            android:label=\"@string/nav_info\"\r\n            android:screenOrientation=\"portrait\">\r\n        </activity>\r\n    </application>\r\n\r\n</manifest>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
+--- a/app/src/main/AndroidManifest.xml	(revision 20ba9022d0735db0c24eaf84aa688e0d4b2ef52a)
++++ b/app/src/main/AndroidManifest.xml	(date 1686034206111)
+@@ -9,6 +9,9 @@
+     <uses-permission android:name="android.permission.INTERNET"/>
+     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+ 
++    <!-- 用于语音识别-->
++    <uses-permission android:name="android.permission.RECORD_AUDIO" />
++
+     <application
+         android:name=".TickApplication"
+         android:allowBackup="true"
+Index: app/build.gradle
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>apply plugin: 'com.android.application'\r\n\r\nandroid {\r\n    compileSdkVersion 26\r\n    defaultConfig {\r\n        applicationId \"com.icodechef.android.tick\"\r\n        minSdkVersion 16\r\n        targetSdkVersion 26\r\n        versionCode 1\r\n        versionName \"1.0.0\"\r\n        testInstrumentationRunner \"android.support.test.runner.AndroidJUnitRunner\"\r\n    }\r\n    buildTypes {\r\n        release {\r\n            minifyEnabled false\r\n            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'\r\n        }\r\n    }\r\n}\r\n\r\ndependencies {\r\n    implementation fileTree(include: ['*.jar'], dir: 'libs')\r\n    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {\r\n        exclude group: 'com.android.support', module: 'support-annotations'\r\n    })\r\n    implementation 'com.android.support:appcompat-v7:26.+'\r\n    implementation 'com.android.support:design:26.+'\r\n    implementation 'com.android.support.constraint:constraint-layout:1.0.2'\r\n    implementation 'com.android.support:support-v4:26.+'\r\n    implementation 'com.android.support:cardview-v7:26.0.0-alpha1'\r\n    testImplementation 'junit:junit:4.12'\r\n    implementation 'com.github.open-android:MPAndroidChart:v3.0.1'\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle b/app/build.gradle
+--- a/app/build.gradle	(revision 20ba9022d0735db0c24eaf84aa688e0d4b2ef52a)
++++ b/app/build.gradle	(date 1686034206118)
+@@ -30,4 +30,5 @@
+     implementation 'com.android.support:cardview-v7:26.0.0-alpha1'
+     testImplementation 'junit:junit:4.12'
+     implementation 'com.github.open-android:MPAndroidChart:v3.0.1'
++
+ }
+Index: app/src/main/java/VoiceRecognition.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/VoiceRecognition.java b/app/src/main/java/VoiceRecognition.java
+new file mode 100644
+--- /dev/null	(date 1686063548034)
++++ b/app/src/main/java/VoiceRecognition.java	(date 1686063548034)
+@@ -0,0 +1,52 @@
++import static android.support.v4.app.ActivityCompat.startActivityForResult;
++
++import android.Manifest;
++import android.content.Context;
++import android.content.Intent;
++import android.content.pm.PackageManager;
++import android.speech.RecognitionListener;
++import android.speech.RecognizerIntent;
++import android.speech.SpeechRecognizer;
++import android.support.v4.app.ActivityCompat;
++import android.support.v4.content.ContextCompat;
++import android.content.Intent;
++import android.app.Activity;
++
++
++import com.icodechef.android.tick.TickApplication;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class VoiceRecognition {
++    private SpeechRecognizer speechRecognizer;
++
++    private static final int SPEECH_REQUEST_CODE = 0;
++
++    public void startrecognition(){
++        // 创建语音识别意图
++        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
++        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "zh");
++        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
++        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "请说出您的命令");
++
++        //开始识别
++        startActivityForResult(intent, SPEECH_REQUEST_CODE);
++        speechRecognizer.startListening(intent);
++        String[] Order={"开始计时","暂停计时","恢复计时","停止计时"};
++    }
++    @Override
++    protected void onActivityResult(int requestCode, int resultCode,
++                                    Intent data) {
++        if (requestCode == SPEECH_REQUEST_CODE && resultCode == RESULT_OK) {
++            List<String> results = data.getStringArrayListExtra(
++                    RecognizerIntent.EXTRA_RESULTS);
++            String spokenText = results.get(0);
++            // Do something with spokenText
++        }
++        super.onActivityResult(requestCode, resultCode, data);
++    }
++
++}
++
++
