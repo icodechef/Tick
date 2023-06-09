@@ -3,10 +3,13 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/HCI-FinalWork.iml" filepath="$PROJECT_DIR$/.idea/HCI-FinalWork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HCI-FinalWork.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/HCI-FinalWork.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/HCI-FinalWork.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HCI-FinalWork.main.iml" filepath="$PROJECT_DIR$/.idea/modules/HCI-FinalWork.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/HCI-FinalWork.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/HCI-FinalWork.unitTest.iml" />
     </modules>
   </component>
 </project>

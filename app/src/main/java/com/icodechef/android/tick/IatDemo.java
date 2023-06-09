@@ -1,12 +1,16 @@
 package com.icodechef.android.tick;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +31,7 @@ import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechRecognizer;
+import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.cloud.ui.RecognizerDialog;
 import com.iflytek.cloud.ui.RecognizerDialogListener;
 import com.icodechef.android.tick.util.FucUtil;
@@ -53,7 +58,7 @@ public class IatDemo extends AppCompatActivity implements OnClickListener {
     private EditText showContacts;
     private TextView languageText;
     private Toast mToast;
-    private SharedPreferences mSharedPreferences;
+
     // 引擎类型
     private String mEngineType = SpeechConstant.TYPE_CLOUD;
 
@@ -67,12 +72,19 @@ public class IatDemo extends AppCompatActivity implements OnClickListener {
 
     private StringBuffer buffer = new StringBuffer();
 
+    private int DEBUG = 0;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SpeechUtility.createUtility(this, SpeechConstant.APPID +"=09788863");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.iatdemo);
-
+        if(DEBUG == 1){
+            Intent replyintent = new Intent();
+            replyintent.putExtra("ORDER","开始");
+            setResult(RESULT_OK,replyintent);
+            finish();
+        }
         languageEntries = getResources().getStringArray(R.array.iat_language_entries);
         languageValues = getResources().getStringArray(R.array.iat_language_value);
         initLayout();
@@ -86,8 +98,26 @@ public class IatDemo extends AppCompatActivity implements OnClickListener {
 
         mResultText = ((EditText) findViewById(R.id.iat_text));
         showContacts = (EditText) findViewById(R.id.iat_contacts);
+
+        //请求录音权限
+        int permissionStatus = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1111);
+        }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == 1111) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 录音权限已授予，执行录音操作
+                ;
+            } else {
+                // 录音权限被拒绝
+                finish();
+            }
+        }
+    }
 
     /**
      * 初始化Layout。
@@ -121,8 +151,7 @@ public class IatDemo extends AppCompatActivity implements OnClickListener {
                 mIatResults.clear();
                 // 设置参数
                 setParam();
-                boolean isShowDialog = mSharedPreferences.getBoolean(
-                        getString(R.string.pref_key_iat_show), true);
+                boolean isShowDialog = false;
                 if (isShowDialog) {
                     // 显示听写对话框
                     mIatDialog.setListener(mRecognizerDialogListener);
@@ -271,6 +300,8 @@ public class IatDemo extends AppCompatActivity implements OnClickListener {
                 mResultText.setText(resultstr);
                 mResultText.setSelection(mResultText.length());
             }
+
+
             if(resultstr == "开始"|| resultstr == "结束"){
                 Intent replyintent = new Intent();
                 replyintent.putExtra("ORDER",resultstr);
@@ -357,31 +388,21 @@ public class IatDemo extends AppCompatActivity implements OnClickListener {
         mIat.setParameter(SpeechConstant.ENGINE_TYPE, mEngineType);
         // 设置返回结果格式
         mIat.setParameter(SpeechConstant.RESULT_TYPE, resultType);
+        mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
 
-        if (language.equals("zh_cn")) {
-            String lag = mSharedPreferences.getString("iat_language_preference",
-                    "mandarin");
-            // 设置语言
-            Log.e(TAG, "language = " + language);
-            mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
-            // 设置语言区域
-            mIat.setParameter(SpeechConstant.ACCENT, lag);
-        } else {
-            mIat.setParameter(SpeechConstant.LANGUAGE, language);
-        }
         Log.e(TAG, "last language:" + mIat.getParameter(SpeechConstant.LANGUAGE));
 
         //此处用于设置dialog中不显示错误码信息
         //mIat.setParameter("view_tips_plain","false");
 
         // 设置语音前端点:静音超时时间，即用户多长时间不说话则当做超时处理
-        mIat.setParameter(SpeechConstant.VAD_BOS, mSharedPreferences.getString("iat_vadbos_preference", "4000"));
+        mIat.setParameter(SpeechConstant.VAD_BOS, "4000");
 
         // 设置语音后端点:后端点静音检测时间，即用户停止说话多长时间内即认为不再输入， 自动停止录音
-        mIat.setParameter(SpeechConstant.VAD_EOS, mSharedPreferences.getString("iat_vadeos_preference", "1000"));
+        mIat.setParameter(SpeechConstant.VAD_EOS,"1000");
 
         // 设置标点符号,设置为"0"返回结果无标点,设置为"1"返回结果有标点
-        mIat.setParameter(SpeechConstant.ASR_PTT, mSharedPreferences.getString("iat_punc_preference", "1"));
+        mIat.setParameter(SpeechConstant.ASR_PTT, "1");
 
         // 设置音频保存路径，保存音频格式支持pcm、wav.
         mIat.setParameter(SpeechConstant.AUDIO_FORMAT, "wav");
