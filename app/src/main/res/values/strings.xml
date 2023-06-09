@@ -110,4 +110,26 @@ wukef2425
     <string name="cal_amount">累计次数</string>
     <string name="cla_focus_amount">累计专注次数</string>
     <string name="Line_chart">年度数据</string>
+    <string name="text_show_iat_result">你的命令</string>
+    <string-array name="iat_language_entries">
+        <item>中文</item>
+        <item>英语</item>
+        <item>日语</item>
+        <item>俄语</item>
+        <item>西班牙语</item>
+        <item>法语</item>
+        <item>韩语</item>
+    </string-array>
+    <string-array name="iat_language_value">
+        <item>zh_cn</item>
+        <item>en_us</item>
+        <item>ja_jp</item>
+        <item>ru-ru</item>
+        <item>es_es</item>
+        <item>fr_fr</item>
+        <item>ko_kr</item>
+    </string-array>
+    <string name="pref_key_iat_show">iat_show</string>
+    <string name="text_begin">请开始说话</string>
+    <string name="text_upload_success">上传成功</string>
 </resources>

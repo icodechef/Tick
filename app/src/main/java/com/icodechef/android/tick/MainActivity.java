@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.icodechef.android.tick.activity.InfoActivity;
 import com.icodechef.android.tick.activity.ScheduleActivity;
@@ -44,26 +45,29 @@ public class MainActivity extends AppCompatActivity
     private Button mBtnResume;
     private Button mBtnStop;
     private Button mBtnSkip;
+    private ImageButton mVoiceRecogBtn;
 
-    private ImageButton mBtnVoiceRecog;
+
+
     private TextView mTextCountDown;
     private TextView mTextTimeTile;
     private TickProgressBar mProgressBar;
     private RippleWrapper mRippleWrapper;
     private long mLastClickTime = 0;
 
+    private int REQUESTCODE = 9999;
+
+    public int RESULTOk = 8888;
+
     public static Intent newIntent(Context context) {
         return new Intent(context, MainActivity.class);
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //启动语音识别
-        SpeechUtility.createUtility(getApplicationContext(), SpeechConstant.APPID +"=09788863");
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -94,6 +98,9 @@ public class MainActivity extends AppCompatActivity
             }
         };
 
+
+
+
         mDrawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
@@ -101,7 +108,8 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         mApplication = (TickApplication)getApplication();
-
+        // 语音识别按钮
+        mVoiceRecogBtn = (ImageButton) findViewById(R.id.voice_recognition_button);
         mBtnStart = (Button)findViewById(R.id.btn_start);
         mBtnPause = (Button)findViewById(R.id.btn_pause);
         mBtnResume = (Button)findViewById(R.id.btn_resume);
@@ -111,11 +119,44 @@ public class MainActivity extends AppCompatActivity
         mTextTimeTile = (TextView)findViewById(R.id.text_time_title);
         mProgressBar = (TickProgressBar)findViewById(R.id.tick_progress_bar);
         mRippleWrapper = (RippleWrapper)findViewById(R.id.ripple_wrapper);
-        mBtnVoiceRecog = (ImageButton)findViewById(R.id.voice_recognition_button);
         initActions();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(requestCode == REQUESTCODE &&resultCode ==RESULT_OK){
+            String result = data.getStringExtra("ORDER");
+            Intent intent = TickService.newIntent(getApplicationContext());
+            switch (result){
+                case "开始":
+                    intent.setAction(TickService.ACTION_START);
+                    startService(intent);
+
+                    mApplication.start();
+                    updateButtons();
+                    updateTitle();
+                    updateRipple();
+                    break;
+                case "结束":
+                    intent.setAction(TickService.ACTION_STOP);
+                    startService(intent);
+
+                    mApplication.stop();
+                    reload();
+                    break;
+            }
+        }
+    }
     private void initActions() {
+
+        mVoiceRecogBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                Log.i("IMGBTN","Click Voice Recognition Btn");
+                Intent intent = new Intent(getApplicationContext(),IatDemo.class);
+                startActivityForResult(intent,REQUESTCODE);
+            }
+        });
         mBtnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,17 +209,7 @@ public class MainActivity extends AppCompatActivity
                 reload();
             }
         });
-        mBtnVoiceRecog.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                Intent i = TickService.newIntent(getApplicationContext());
-                i.setAction(TickService.ACTION_VOICEREC);
-                startService(i);
 
-                reload();
-            }
-
-        });
         mBtnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

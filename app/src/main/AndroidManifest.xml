@@ -62,6 +62,11 @@
             android:label="@string/nav_setting"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".IatDemo"
+            android:label="语音识别"
+            android:screenOrientation="portrait">
+        </activity>
 
         <service
             android:name=".TickService"

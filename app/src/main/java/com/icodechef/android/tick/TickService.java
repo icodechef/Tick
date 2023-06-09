@@ -23,19 +23,29 @@ import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.NonNull;
 import android.support.v7.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.icodechef.android.tick.database.TickDBAdapter;
 import com.icodechef.android.tick.util.CountDownTimer;
 import com.icodechef.android.tick.util.Sound;
 import com.icodechef.android.tick.util.TimeFormatUtil;
 import com.icodechef.android.tick.util.WakeLockHelper;
+import com.iflytek.cloud.ErrorCode;
+import com.iflytek.cloud.EvaluatorResult;
+import com.iflytek.cloud.InitListener;
+import com.iflytek.cloud.RecognizerListener;
+import com.iflytek.cloud.RecognizerResult;
 import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechListener;
+import com.iflytek.cloud.SpeechRecognizer;
+import com.iflytek.cloud.SpeechUtility;
 
 
 import java.util.ArrayList;
@@ -63,17 +73,21 @@ public class TickService extends Service implements CountDownTimer.OnCountDownTi
     public static final String ACTION_POMODORO_MODE_ON =
             "com.icodechef.android.timer.ACTION_POMODORO_MODE_OFF";
 
+    public Toast mToast;
     public static final String MILLIS_UNTIL_FINISHED = "MILLIS_UNTIL_FINISHED";
     public static final String REQUEST_ACTION = "REQUEST_ACTION";
     public static final int NOTIFICATION_ID = 1;
     public static final String WAKELOCK_ID = "tick_wakelock";
 
     private CountDownTimer mTimer;
+
+
     private TickApplication mApplication;
     private WakeLockHelper mWakeLockHelper;
     private TickDBAdapter mDBAdapter;
     private Sound mSound;
     private long mID;
+
 
     private BroadcastReceiver mIntentReceiver = new BroadcastReceiver() {
         @Override
@@ -197,60 +211,17 @@ public class TickService extends Service implements CountDownTimer.OnCountDownTi
 
         }
     }
+
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        // 提示弹窗
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setTitle("提示");
-        builder.setMessage("这是一条消息提示！");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // 在确定按钮点击事件中处理相关逻辑
-                // ...
-            }
-        });
         if (intent != null) {
             String action = intent.getAction();
-            if (Objects.equals(action, ACTION_VOICEREC))
-            {
-                // 使用科大讯飞第三方SDK
-                //使用SpeechRecognizer对象，可根据回调消息自定义界面；
-                mIat = SpeechRecognizer.createRecognizer(this, mInitListener);
-
-//设置语法ID和 SUBJECT 为空，以免因之前有语法调用而设置了此参数；或直接清空所有参数，具体可参考 DEMO 的示例。
-                mIat.setParameter( SpeechConstant.CLOUD_GRAMMAR, null );
-                mIat.setParameter( SpeechConstant.SUBJECT, null );
-//设置返回结果格式，目前支持json,xml以及plain 三种格式，其中plain为纯听写文本内容
-                mIat.setParameter(SpeechConstant.RESULT_TYPE, "json");
-//此处engineType为“cloud”
-                mIat.setParameter( SpeechConstant.ENGINE_TYPE, engineType );
-//设置语音输入语言，zh_cn为简体中文
-                mIat.setParameter(SpeechConstant.LANGUAGE, "zh_cn");
-//设置结果返回语言
-                mIat.setParameter(SpeechConstant.ACCENT, "mandarin");
-// 设置语音前端点:静音超时时间，单位ms，即用户多长时间不说话则当做超时处理
-//取值范围{1000～10000}
-                mIat.setParameter(SpeechConstant.VAD_BOS, "4000");
-//设置语音后端点:后端点静音检测时间，单位ms，即用户停止说话多长时间内即认为不再输入，
-//自动停止录音，范围{0~10000}
-                mIat.setParameter(SpeechConstant.VAD_EOS, "1000");
-//设置标点符号,设置为"0"返回结果无标点,设置为"1"返回结果有标点
-                mIat.setParameter(SpeechConstant.ASR_PTT,"1");
-
-//开始识别，并设置监听器
-                mIat.startListening(mRecogListener);
-            }
-            else {
-                ClockAction(action,intent);
-            }
-
+            ClockAction(action,intent);
         }
-
         return START_STICKY;
     }
+    // 语音识别监听器
 
     private void stopTimer() {
         if (isNotificationOn()) {
